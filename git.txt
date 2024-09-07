@@ -1,0 +1,44 @@
+第一步 进入文件所在目录 创建仓库
+git init 
+第二步
+git add --all
+若想哪一项步提交则输入git rm --cached src/main.js
+第三步
+git commit -m 'init初始化'
+添加到暂存区  git add . 或者 git add src/main.js
+将存储到暂存区的数据拉取回来 
+git reset HEAD src/main.js
+将文件还原到上次提交之前的数据
+git checkout -- src/main.js
+查看分支 git branch   // main
+创建新的分支
+git branch develop  // main  develop
+切换分支 git checkout develop 
+
+创建完直接切换分支 git checkout -b greeting  // 若greeting分支不存在就会直接创建一个
+
+重置上一次提交 git reset HEAD~  在重新提交 git add --all   -> git commit -m 'xxx'
+
+切换分支 git checkout develop
+合并分支 git merge greeting    // 将greeting分支的数据合并到develop
+
+git remote -v 查询远程仓库 没有的话
+到 gitHub网站 里面 点新建 Repository name *   输入 和文件一样的名字  底下点击Create repository
+把页面里的https://github.com/qlz123921/xb2-node.git  用下面代码添加
+git remote add origin https://github.com/qlz123921/xb2-node.git
+
+切换到main分支    git checkout main  
+
+将main分支数据上传到gitHub仓库  git push origin main  
+
+将develop分支数据合并到 main分支   git merge develop   
+
+再次将main分支数据上传到gitHub仓库   git push origin main 
+
+若其他地方有上传可拉取数据  可拉取数据 
+git pull origin main 
+
+还原到某版本数据  -> git log --oneline 查看版本号   ->  git reset --hard <commit-hash>  -> <commit-hash>就是版本号
+
+
+
