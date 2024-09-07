@@ -1,1 +1,2 @@
-console.log('hello~')
+const greeting = '你好'
+console.log(greeting)
