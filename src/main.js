@@ -31,8 +31,18 @@ const data = [
 app.get('/posts/:postId', (request, response) => {
   // 获取id
   const { postId } = request.params
-
+  // 查找具体内容
   const posts = data.filter((item) => item.id == postId)
-
+  // 做出响应
   response.send(posts[0])
+})
+app.post('/posts/:postId', (request, response) => {
+  const postId = Math.random().toString().slice(2, 7) + String.fromCharCode(97 + Math.floor(Math.random() * 26))
+})
+app.put('/posts/:postId', (request, response) => {})
+app.patch('/posts/:postId', (request, response) => {})
+app.delete('/posts/:postId', (request, response) => {
+  const { postId } = request.params
+  const posts = data.slice((item) => item.id == postId)
+  response.send(posts)
 })
