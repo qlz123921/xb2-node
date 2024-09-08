@@ -2,6 +2,11 @@ const express = require('express')
 const app = express()
 const port = 3003
 
+/**
+ * 使用 JSON 中间件
+ */
+app.use(express.json())
+
 app.listen(port, () => {
   console.log('🚀服务已启动!')
 })
@@ -36,13 +41,44 @@ app.get('/posts/:postId', (request, response) => {
   // 做出响应
   response.send(posts[0])
 })
-app.post('/posts/:postId', (request, response) => {
-  const postId = Math.random().toString().slice(2, 7) + String.fromCharCode(97 + Math.floor(Math.random() * 26))
+
+/**
+ * 创建内容
+ */
+app.post('/posts', (request, response) => {
+  // 获取请求里的数据
+  const { content } = request.body
+  // 设置响应状态码
+  response.status(201)
+  // 输出请求头部数据
+  console.log(request.headers['sing-along'])
+
+  // 创建响应头部数据
+  response.set('Sing-Along', 'How I wonder what you are!')
+  // 做出响应
+  response.send({
+    message: `成功创建了内容:${content}`,
+  })
 })
-app.put('/posts/:postId', (request, response) => {})
-app.patch('/posts/:postId', (request, response) => {})
-app.delete('/posts/:postId', (request, response) => {
-  const { postId } = request.params
-  const posts = data.slice((item) => item.id == postId)
-  response.send(posts)
-})
+
+// app.put('/posts/:postId', (request, response) => {})
+// app.patch('/posts/:postId', (request, response) => {})
+// app.delete('/posts/:postId', (request, response) => {
+//   const { postId } = request.params
+//   const index = data.findIndex((item) => item.id === postId)
+
+//   if (index > -1) {
+//     data.splice(index, 1)
+//   }
+//   response.send(data)
+// })
+// 创建内容
+// app.post('/posts', handler)
+// // 更新内容
+// app.patch('/posts/:postId', handler)
+// // 删除内容
+// app.delete('/posts/:postId', handler)
+// // 内容列表
+// app.get('/posts', handler)
+// // 单个内容
+// app.get('/posts/:postId', handler)
