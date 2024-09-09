@@ -6,7 +6,8 @@
   "main": "dist/main.js",
   "scripts": {
     "start:dev": "tsc-watch --onSuccess \"node ./dist/main.js\"",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
