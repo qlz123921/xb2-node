@@ -1,11 +1,60 @@
-/**
- * 获取内容列表
- */
-export const getPosts = () => {
-  const data = [
-    { content: '明月出天山' },
-    { content: '一览众山小' },
-    { content: '日出江花红胜火' },
-  ];
-  return data;
+import pool from '../database.js';
+
+export const getAllPosts = async () => {
+  const client = await pool.connect();
+  try {
+    const res = await client.query('SELECT * FROM posts');
+    return res.rows;
+  } finally {
+    client.release();
+  }
+};
+
+export const getPostById = async (id: number) => {
+  const client = await pool.connect();
+  try {
+    const res = await client.query('SELECT * FROM posts WHERE id = $1', [id]);
+    return res.rows[0];
+  } finally {
+    client.release();
+  }
+};
+
+export const createPost = async (title: string, content: string) => {
+  const client = await pool.connect();
+  try {
+    const res = await client.query(
+      'INSERT INTO posts (title, content) VALUES ($1, $2) RETURNING *',
+      [title, content],
+    );
+    return res.rows[0];
+  } finally {
+    client.release();
+  }
+};
+
+export const updatePost = async (
+  id: number,
+  title: string,
+  content: string,
+) => {
+  const client = await pool.connect();
+  try {
+    const res = await client.query(
+      'UPDATE posts SET title = $1, content = $2 WHERE id = $3 RETURNING *',
+      [title, content, id],
+    );
+    return res.rows[0];
+  } finally {
+    client.release();
+  }
+};
+
+export const deletePost = async (id: number) => {
+  const client = await pool.connect();
+  try {
+    await client.query('DELETE FROM posts WHERE id = $1', [id]);
+  } finally {
+    client.release();
+  }
 };

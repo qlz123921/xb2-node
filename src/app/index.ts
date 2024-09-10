@@ -1,30 +1,19 @@
-import express, { Express } from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
 import postRouter from '../post/post.router.js';
-import { defaultErrorHangler } from './app.middleware.js';
-/**
- * 创建应用
- */
+import { defaultErrorHandler, requestUrl } from './app.middleware.js';
+
 const app: Express = express();
 
-/**
- * 处理 JSON
- */
 app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.send('Hello, world! Welcome to the home page.');
-});
-/**
- * 路由
- */
+app.use(requestUrl); // 添加 URL 请求日志中间件
 app.use(postRouter);
 
-/**
- * 默认异常处理器
- */
-app.use(defaultErrorHangler);
+// 测试用的错误路由
+app.get('/test-error', (req: Request, res: Response, next: NextFunction) => {
+  const error = new Error('This is a test error');
+  next(error);
+});
 
-/**
- * 导出应用
- */
+app.use(defaultErrorHandler);
+
 export default app;

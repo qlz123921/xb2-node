@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-
+import { SomeSpecificError } from './errors.js';
 /**
  * 输出请求地址
  */
@@ -15,22 +15,29 @@ export const requestUrl = (
 /**
  * 默认异常处理器
  */
-export const defaultErrorHangler = (
+export const defaultErrorHandler = (
   error: any,
   request: Request,
   response: Response,
   next: NextFunction,
 ) => {
-  let statueCode: number, message: string;
+  console.error('Error occurred:', error);
+  let statusCode = 500;
+  let message = '服务暂时出了点问题~~🌲';
 
   /**
    * 处理异常
    */
-  switch (error.message) {
+  switch (error instanceof SomeSpecificError) {
+    case true:
+      statusCode = 400;
+      message = 'Specific error occurred';
+      break;
     default:
-      statueCode = 500;
+      // Handle general errors or unknown errors
+      statusCode = 500;
       message = '服务暂时出了点问题~~🌲';
       break;
   }
-  response.status(statueCode).send({ message });
+  response.status(statusCode).send({ message });
 };
