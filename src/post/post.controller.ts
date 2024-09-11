@@ -1,17 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
 import * as postService from './post.server.js';
-
-export const getPosts = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+import pool from '../database.js';
+export const getAllPosts = async () => {
+  const client = await pool.connect();
   try {
-    const posts = await postService.getAllPosts();
-    // res.json(posts);
-    res.json({ key: 'value' }); 
+    console.log('Fetching all posts from the database'); // Debugging line
+    const res = await client.query('SELECT * FROM posts');
+    console.log('Posts fetched successfully'); // Debugging line
+    return res.rows;
   } catch (error) {
-    next(error);
+    console.error('Error fetching posts from the database:', error); // Debugging line
+    throw error; // Rethrow the error to be caught by the route handler
+  } finally {
+    client.release();
   }
 };
 
