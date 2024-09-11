@@ -24,7 +24,7 @@ export const createPost = async (title: string, content: string) => {
   const client = await pool.connect();
   try {
     const res = await client.query(
-      'INSERT INTO posts (title, content) VALUES ($1, $2) RETURNING *',
+      'INSERT INTO content (title, content) VALUES ($1, $2) RETURNING *',
       [title, content],
     );
     return res.rows[0];
@@ -38,10 +38,10 @@ export const updatePost = async (
   title: string,
   content: string,
 ) => {
-  const client = await pool.connect();
+const client = await pool.connect();
   try {
     const res = await client.query(
-      'UPDATE posts SET title = $1, content = $2 WHERE id = $3 RETURNING *',
+      'UPDATE content SET title = $1, content = $2 WHERE id = $3 RETURNING *',
       [title, content, id],
     );
     return res.rows[0];
@@ -50,10 +50,11 @@ export const updatePost = async (
   }
 };
 
+
 export const deletePost = async (id: number) => {
   const client = await pool.connect();
   try {
-    await client.query('DELETE FROM posts WHERE id = $1', [id]);
+    await client.query('DELETE FROM content WHERE id = $1', [id]);
   } finally {
     client.release();
   }
