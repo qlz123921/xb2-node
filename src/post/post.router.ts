@@ -1,5 +1,5 @@
-import express, { Router } from 'express';
-import { Request, Response } from 'express';
+import express, { Router,Request, Response,NextFunction } from 'express';
+import { getAllPosts, getPostById, createPost, updatePost, deletePost } from './post.server.js';
 import * as postController from './post.controller.js';
 import pkg from 'pg';
 const { Client } = pkg;
@@ -27,16 +27,30 @@ client.connect();
 // 获取所有帖子
 router.get('/posts', async (req: Request, res: Response) => {
   try {
-    const result = await client.query('SELECT * FROM posts');
+    // 这里的content 就是xb2-node服务器里面创建的 content 
+    const result = await client.query('SELECT * FROM content');
     res.json(result.rows);
   } catch (error) {
+    console.error('Error fetching posts:', error);
     res.status(500).json({ message: '获取帖子失败' });
   }
 });
-/**
- * 获取单个帖子
- */
-router.get('/posts/:id', requestUrl, postController.getPost);
+// 获取单个帖子
+router.get('/posts/:id', async (req: Request, res: Response) => {
+  const { id } = req.params;
+  
+  try {
+    const post = await getPostById(Number(id));
+    if (post) {
+      res.json(post);
+    } else {
+      res.status(404).json({ message: 'Post not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching post:', error);
+    res.status(500).json({ message: '获取帖子失败' });
+  }
+});
 
 // 创建一个新帖子
 router.post('/posts', async (req: Request, res: Response) => {
@@ -48,6 +62,7 @@ router.post('/posts', async (req: Request, res: Response) => {
     ]);
     res.status(201).json({ message: 'Post created' });
   } catch (error) {
+    console.error('Error creating post:', error);
     res.status(500).json({ message: '创建帖子失败' });
   }
 });
@@ -55,11 +70,36 @@ router.post('/posts', async (req: Request, res: Response) => {
 /**
  * 更新帖子
  */
-router.put('/posts/:id', requestUrl, postController.updatePost);
+router.put('/posts/:id', requestUrl, async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { title, content } = req.body;
+  try {
+    // 更新 content 表中的数据
+    await client.query(
+      'UPDATE content SET title = $1, content = $2 WHERE id = $3',
+      [title, content, id]
+    );
+    res.status(200).json({ message: 'Post updated' });
+  } catch (error) {
+    console.error('Error updating post:', error);
+    res.status(500).json({ message: '更新帖子失败' });
+  }
+});
+
 
 /**
  * 删除帖子
  */
-router.delete('/posts/:id', requestUrl, postController.deletePost);
+router.delete('/posts/:id', requestUrl, async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    // 从 content 表中删除数据
+    await client.query('DELETE FROM content WHERE id = $1', [id]);
+    res.status(200).json({ message: 'Post deleted' });
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    res.status(500).json({ message: '删除帖子失败' });
+  }
+});
 
 export default router;

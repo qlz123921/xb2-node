@@ -8,7 +8,8 @@ export const getPosts = async (
 ) => {
   try {
     const posts = await postService.getAllPosts();
-    res.json(posts);
+    // res.json(posts);
+    res.json({ key: 'value' }); 
   } catch (error) {
     next(error);
   }

@@ -39,5 +39,6 @@ export const defaultErrorHandler = (
       message = '服务暂时出了点问题~~🌲';
       break;
   }
-  response.status(statusCode).send({ message });
+  // response.status(statusCode).send({ message });
+  response.status(200).json({ message: 'Success' });
 };
