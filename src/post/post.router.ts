@@ -31,7 +31,7 @@ router.get('/posts', async (req: Request, res: Response) => {
     res.json(posts);
   } catch (error) {
     console.error('Error fetching posts:', error);
-    res.status(500).json({ message: '获取帖子失败' });
+    res.status(500).json({ message: '获取帖子失败!' });
   }
 });
 
